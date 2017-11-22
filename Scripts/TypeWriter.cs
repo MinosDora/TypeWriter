@@ -6,33 +6,19 @@ using UnityEngine;
 
 public class TypeWriter
 {
-    //打字机间隔时间
-    private float typerSpaceTime = .05f;
+    public bool IsTyping { get; private set; }
 
-    //是否快速打印
-    private bool isFastTyper = false;
+    public bool IsFastTyper { get; set; }
 
-    //是否正在打印
-    private bool isTyperting = false;
-    //用于打印的字符串
     private StringBuilder stringBuilder = new StringBuilder();
-    //存放类型的堆栈
     private Stack<char> typeStack = new Stack<char>();
-    //临时存放类型的字符串
     private StringBuilder typeStringBuildertemp = new StringBuilder();
-    //存放类型的字符串
     private StringBuilder typeStringBuilder = new StringBuilder();
 
-    /// <summary>
-    /// 打字机实现方法
-    /// </summary>
-    /// <param name="content">需要打字的字符串</param>
-    /// <param name="showContentAction">每打印一个字符的Action，参数为符合富文本格式的当前字符串</param>
-    /// <returns></returns>
-    public IEnumerator TypeWriterString(string content, Action<string> showContentAction = null)
+    public IEnumerator TypeWriterString(string content, float typerSpaceTime = .05f, Action<string> showContentAction = null)
     {
-        isTyperting = true;
-        isFastTyper = false;
+        IsTyping = true;
+        IsFastTyper = false;
         stringBuilder.Remove(0, stringBuilder.Length);
         typeStack.Clear();
         char[] contentCharArray = content.ToCharArray();
@@ -119,17 +105,12 @@ public class TypeWriter
                     }
                     showContentAction(showContentStr);
                 }
-                if (!isFastTyper)
+                if (!IsFastTyper)
                 {
                     yield return new WaitForSeconds(typerSpaceTime);
                 }
             }
         }
-        isTyperting = false;
-    }
-
-    public void SetTyperFast(bool isFastTyper)
-    {
-        this.isFastTyper = true;
+        IsTyping = false;
     }
 }
